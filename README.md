@@ -1,6 +1,7 @@
 API schema via Protocol Buffers (source of truth)
 
 Structure
+
 - proto/: .proto files split by domain
   - common.proto
   - browser_info.proto
@@ -8,28 +9,33 @@ Structure
   - tabs.proto
 - index.sys.mts: TypeScript aggregator (re‑exports generated types once wired)
 
-Generate TypeScript (ts-proto)
+Generate TypeScript (Buf + ts-proto)
 Prereqs:
-- protoc installed and on PATH
-- ts-proto installed locally: npm i -D ts-proto
 
-Commands (from repo root):
+- Buf CLI (https://buf.build) をインストール
+  - Windows (PowerShell 例): `winget install Buf.Buf` もしくは `choco install buf` / `scoop install buf`
+- (不要) 旧来の protoc / ts-proto npm インストールは不要。Buf がリモートプラグイン `buf.build/community/stephenh-ts-proto` を実行します。
+
+Files added / updated:
+
+- `buf.yaml` (module config at repo root; proto files live under `proto/`)
+- `buf.gen.yaml` (ts-pro ト プラグイン設定)
+
+Command (repo root):
 
 ```
-PROTO_DIR=src/apps/modules/src/modules/os-server/api-types/proto
-OUT_DIR=src/apps/modules/src/modules/os-server/api-types/gen/ts
-
-mkdir -p "$OUT_DIR"
-
-./node_modules/.bin/protoc \
-  --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto \
-  --ts_proto_out="$OUT_DIR" \
-  --ts_proto_opt=esModuleInterop=true,outputServices=false,useOptionals=all,env=browser,json_names=true,forceLong=string \
-  -I "$PROTO_DIR" \
-  $(ls "$PROTO_DIR"/*.proto)
+buf generate
 ```
 
-This generates ESM TypeScript files per proto into `gen/ts`. You can then re-export from `api-types/index.sys.mts`.
+Output:
+
+- `gen/ts/proto/*.ts` に生成されます (ts-proto の相対パス構造保持)。
+
+NOTE: 現在はリポジトリ root が module root のため import には `proto/` prefix が必要です。
+
+オプション調整は `buf.gen.yaml` の `opt:` を編集してください。
+
+旧 protoc 手順は不要になりました。必要であれば過去コミットを参照してください。
 
 Generate Rust (prost / tonic)
 Option A: build.rs in your Rust crate
@@ -54,13 +60,14 @@ fn main() {
 Option B: tonic-build (if defining gRPC services later)
 
 Notes on JSON mapping
+
 - Server currently returns some `string | null` fields. Proto3 JSON does not use `null` for scalars; prefer `optional` fields and omit them when absent.
 - For base64 images, prefer `bytes` in proto; if you keep `string`, return a data URL or base64 string consistently.
 - Enums are serialized as strings in JSON mapping; keep names stable.
 
 Migration plan
-1) Generate TS types into `gen/ts` and export them.
-2) Update `server.sys.mts` to import generated types (instead of handwritten ones).
-3) Adjust response payloads to follow Proto JSON mapping (omit vs null).
-4) Update Rust caller to use Prost-generated types. If staying on HTTP/JSON, use pbjson or manual serde structs mirroring proto JSON mapping.
 
+1. Generate TS types into `gen/ts` and export them.
+2. Update `server.sys.mts` to import generated types (instead of handwritten ones).
+3. Adjust response payloads to follow Proto JSON mapping (omit vs null).
+4. Update Rust caller to use Prost-generated types. If staying on HTTP/JSON, use pbjson or manual serde structs mirroring proto JSON mapping.

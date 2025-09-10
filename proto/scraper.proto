@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package floorp.os_server.scraper;
 
-import "src/apps/modules/src/modules/os-server/api-types/proto/common.proto";
+import "proto/common.proto"; // repo root module
 
 // Instance management
 message InstanceExistsResponse { bool exists = 1; }

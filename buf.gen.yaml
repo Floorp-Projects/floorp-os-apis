@@ -1,0 +1,14 @@
+version: v1
+
+# Buf で ts-proto を実行して TypeScript 型 + 変換関数を生成
+plugins:
+  - plugin: buf.build/community/stephenh-ts-proto
+    out: gen/ts
+    opt:
+      - esModuleInterop=true
+      - outputServices=false
+      - useOptionals=all
+      - env=browser
+      - json_names=true
+      - forceLong=string
+      - onlyTypes=true
