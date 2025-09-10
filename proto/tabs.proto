@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package floorp.os_server.tabs;
+
+import "src/apps/modules/src/modules/os-server/api-types/proto/common.proto";
+
+// Tab manager list entry
+message TabEntry {
+  string browser_id = 1;
+  string title = 2;
+  string url = 3;
+  bool selected = 4;
+  bool pinned = 5;
+}
+
+// Instance lifecycle
+message CreateTabInstanceRequest {
+  string url = 1;
+  message Options { bool in_background = 1; }
+  Options options = 2;
+}
+message CreateTabInstanceResponse { string instance_id = 1; }
+message AttachRequest { string browser_id = 1; }
+message AttachResponse { optional string instance_id = 1; }
+message InstanceId { string id = 1; }
+
+// Navigation & state
+message NavigateRequest { string url = 1; }
+message URIResponse { string uri = 1; }
+message HTMLResponse { optional string html = 1; }
+message ElementResponse { optional string element = 1; }
+message TextResponse { optional string text = 1; }
+message ValueResponse { optional string value = 1; }
+
+// Actions
+message Selector { string selector = 1; }
+message WaitForElementRequest { string selector = 1; int32 timeout = 2; }
+message FoundResponse { optional bool found = 1; }
+message ClickedResponse { optional bool clicked = 1; }
+message ExecuteScriptRequest { string script = 1; }
+message ImageResponse { optional string image = 1; }
+message RegionScreenshotRequest { floorp.os_server.common.Rect rect = 1; }
+message FormDataEntry { string selector = 1; string value = 2; }
+message FillFormRequest { repeated FormDataEntry form_data = 1; }
+

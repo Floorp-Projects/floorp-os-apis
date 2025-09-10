@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package floorp.os_server.common;
+
+// Simple OK result
+message OkResponse {
+  bool ok = 1;
+}
+
+// Error payload (used with non-2xx HTTP status)
+message ErrorResponse {
+  string error = 1;
+}
+
+// Health check
+message HealthResponse {
+  string status = 1; // "ok"
+}
+
+// Rectangle region
+message Rect {
+  // Use optional presence if callers want to omit fields.
+  optional int32 x = 1;
+  optional int32 y = 2;
+  optional int32 width = 3;
+  optional int32 height = 4;
+}
+

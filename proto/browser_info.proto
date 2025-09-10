@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package floorp.os_server.browser;
+
+// Tabs -------------------------------------------------------------
+message Tab {
+  int32 id = 1;
+  string url = 2;
+  string title = 3;
+  bool is_active = 4;
+  bool is_pinned = 5;
+}
+
+// History ----------------------------------------------------------
+message HistoryItem {
+  string url = 1;
+  string title = 2;
+  int64 last_visit_date = 3; // epoch millis
+  int32 visit_count = 4;
+}
+
+// Downloads --------------------------------------------------------
+message Download {
+  int32 id = 1;
+  string url = 2;
+  string filename = 3;
+  string status = 4;
+  int64 start_time = 5; // epoch millis
+}
+
+// Combined context -------------------------------------------------
+message BrowserContext {
+  repeated HistoryItem history = 1;
+  repeated Tab tabs = 2;
+  repeated Download downloads = 3;
+}
+
+// Optional request helpers for query params (used by clients)
+message GetHistoryRequest { int32 limit = 1; }
+message GetDownloadsRequest { int32 limit = 1; }
+message GetContextRequest {
+  int32 history_limit = 1;
+  int32 download_limit = 2;
+}
+

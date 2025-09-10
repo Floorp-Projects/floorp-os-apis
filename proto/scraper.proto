@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package floorp.os_server.scraper;
+
+import "src/apps/modules/src/modules/os-server/api-types/proto/common.proto";
+
+// Instance management
+message InstanceExistsResponse { bool exists = 1; }
+message CreateInstanceResponse { string instance_id = 1; }
+message InstanceId { string id = 1; }
+
+// Navigation & state
+message NavigateRequest { string url = 1; }
+message URIResponse { optional string uri = 1; }
+message HTMLResponse { optional string html = 1; }
+message ElementResponse { optional string element = 1; }
+message TextResponse { optional string text = 1; }
+
+// Actions
+message Selector { string selector = 1; }
+message WaitForElementRequest { string selector = 1; int32 timeout = 2; }
+message FoundResponse { bool found = 1; }
+message ClickedResponse { bool clicked = 1; }
+message ExecuteScriptRequest { string script = 1; }
+message ImageResponse { optional string image = 1; }
+message RegionScreenshotRequest { floorp.os_server.common.Rect rect = 1; }
+message FormDataEntry { string selector = 1; string value = 2; }
+message FillFormRequest { repeated FormDataEntry form_data = 1; }
+
