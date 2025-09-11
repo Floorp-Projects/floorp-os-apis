@@ -1,0 +1,35 @@
+{
+    "name": "@floorp/os-server-api-spec",
+    "version": "1.0.0",
+    "description": "OpenAPI specification and type definitions for Floorp OS Local HTTP Server API",
+    "main": "types.ts",
+    "scripts": {
+        "validate": "swagger-codegen validate -i openapi.yaml",
+        "generate-typescript": "openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o ./generated/typescript",
+        "build": "tsc types.ts --declaration --outDir dist",
+        "lint": "spectral lint openapi.yaml",
+        "docs": "redoc-cli build openapi.yaml --output docs/index.html"
+    },
+    "keywords": [
+        "openapi",
+        "floorp",
+        "api",
+        "browser",
+        "automation"
+    ],
+    "author": "Floorp Projects",
+    "license": "MPL-2.0",
+    "devDependencies": {
+        "@apidevtools/swagger-parser": "^10.1.0",
+        "@openapitools/openapi-generator-cli": "^2.7.0",
+        "@stoplight/spectral-cli": "^6.11.0",
+        "redoc-cli": "^0.13.21",
+        "swagger-codegen-cli": "^3.0.0",
+        "typescript": "^5.0.0"
+    },
+    "files": [
+        "openapi.yaml",
+        "types.ts",
+        "README.md"
+    ]
+}
