@@ -555,6 +555,253 @@ paths:
               schema:
                 $ref: "#/components/schemas/TabURIResponse"
 
+  # Tab element, screenshot and form operations (mirror scraper endpoints)
+  /tabs/instances/{id}/html:
+    get:
+      summary: Get HTML content of tab instance
+      operationId: getTabInstanceHtml
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: HTML content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTMLResponse"
+
+  /tabs/instances/{id}/element:
+    get:
+      summary: Get element HTML for selector in tab instance
+      operationId: getTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          description: CSS selector for the element
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element HTML
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  element:
+                    type: string
+                    nullable: true
+
+  /tabs/instances/{id}/elementText:
+    get:
+      summary: Get text content of element in tab instance
+      operationId: getTabElementText
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          description: CSS selector for the element
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element text content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TextResponse"
+
+  /tabs/instances/{id}/click:
+    post:
+      summary: Click an element in tab instance
+      operationId: clickTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Click result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/waitForElement:
+    post:
+      summary: Wait for element to appear in tab instance
+      operationId: waitForTabElement
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitForElementRequest"
+      responses:
+        "200":
+          description: Wait result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FoundResponse"
+
+  /tabs/instances/{id}/executeScript:
+    post:
+      summary: Execute JavaScript in tab instance
+      operationId: executeTabScript
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteScriptRequest"
+      responses:
+        "200":
+          description: Script executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/screenshot:
+    get:
+      summary: Take screenshot of tab instance
+      operationId: takeTabScreenshot
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Screenshot data (base64)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponse"
+
+  /tabs/instances/{id}/elementScreenshot:
+    get:
+      summary: Take screenshot of a specific element in tab instance
+      operationId: takeTabElementScreenshot
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          description: CSS selector for the element
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element screenshot data (base64)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponse"
+
+  /tabs/instances/{id}/fullPageScreenshot:
+    get:
+      summary: Take full page screenshot of tab instance
+      operationId: takeTabFullPageScreenshot
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      responses:
+        "200":
+          description: Full page screenshot data (base64)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponse"
+
+  /tabs/instances/{id}/regionScreenshot:
+    post:
+      summary: Take screenshot of specific region in tab instance
+      operationId: takeTabRegionScreenshot
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegionScreenshotRequest"
+      responses:
+        "200":
+          description: Region screenshot data (base64)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponse"
+
+  /tabs/instances/{id}/fillForm:
+    post:
+      summary: Fill form fields in tab instance
+      operationId: fillTabForm
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FillFormRequest"
+      responses:
+        "200":
+          description: Form fill result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
+  /tabs/instances/{id}/value:
+    get:
+      summary: Get value of form element in tab instance
+      operationId: getTabElementValue
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+        - name: selector
+          in: query
+          description: CSS selector for the form element
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Element value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValueResponse"
+
+  /tabs/instances/{id}/submit:
+    post:
+      summary: Submit form in tab instance
+      operationId: submitTabForm
+      parameters:
+        - $ref: "#/components/parameters/InstanceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectorRequest"
+      responses:
+        "200":
+          description: Form submission result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+
   # Additional tab operations follow the same pattern as scraper
   # (HTML, element operations, screenshots, forms, etc.)
 
